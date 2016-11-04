@@ -16,7 +16,11 @@ class TechSalaryEntry
 		TechSalary.create(params)
 	end
 
-	def get_all_salaries
-		return TechSalary.all
+	def search_salaries(params)
+		if params.empty?
+			return TechSalary.all
+		else
+			return TechSalary.where(params)
+		end
 	end
 end

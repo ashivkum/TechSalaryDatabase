@@ -22,8 +22,9 @@ class TechSalaryController < ApplicationController
 	end
 
 	def get_all_salaries
+		params = request.query_parameters.symbolize_keys
 		begin
-			all_salaries = TechSalaryEntry.new.get_all_salaries
+			all_salaries = TechSalaryEntry.new.search_salaries(params)
 		rescue Exception => error
 			render :json => { :output => FIVE_HUNDRED_ERROR_MESSAGE }, :status => 500
 			return
