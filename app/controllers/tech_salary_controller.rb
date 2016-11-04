@@ -1,11 +1,35 @@
-require 'TechSalary'
+require 'TechSalaryEntry'
 
 class TechSalaryController < ApplicationController
 
+	FIVE_HUNDRED_ERROR_MESSAGE = "An Internal Server Error has occured.  Please contact the webmaster"
+	CREATED_ERROR_MESSAGE = "Salary successfully created!"
+
 	def create_new_salary
 		params = request.request_parameters.symbolize_keys
-		binding.pry
-		@tech_salary = TechSalary.create(request.request_parameters)
-		render :json => { :output => tech_salary }, :status => 201
+		@tech_salary = TechSalaryEntry.new
+		begin
+			@tech_salary.create_new_salary(request.request_parameters)
+		rescue ArgumentError => error
+			render :json => { :output => error.message }, :status => 400
+			return
+		rescue Exception => error
+			render :json => { :output => FIVE_HUNDRED_ERROR_MESSAGE }, :status => 500
+			return
+		end
+		render :json => { :output => CREATED_ERROR_MESSAGE }, :status => 201
+		return
 	end
+
+	def get_all_salaries
+		begin
+			all_salaries = TechSalaryEntry.new.get_all_salaries
+		rescue Exception => error
+			render :json => { :output => FIVE_HUNDRED_ERROR_MESSAGE }, :status => 500
+			return
+		end
+		render :json => all_salaries, :status => 200
+		return
+	end
+
 end
